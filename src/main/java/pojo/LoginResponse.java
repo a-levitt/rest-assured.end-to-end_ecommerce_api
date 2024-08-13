@@ -19,7 +19,7 @@ public class LoginResponse {
         this.userId = userId;
     }
 
-    public String getMessage() {
+    public String getnMessage() {
         return message;
     }
     public void setMessage(String message) {
