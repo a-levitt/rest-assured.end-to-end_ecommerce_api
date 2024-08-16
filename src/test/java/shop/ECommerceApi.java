@@ -11,6 +11,7 @@ import pojo.LoginResponse;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -129,5 +130,26 @@ public class ECommerceApi {
                 .log().all()
                 .extract().response()
         ;
+
+        // Delete product
+        RequestSpecification deleteProductBaseRequest = new RequestSpecBuilder()
+                .setBaseUri("https://rahulshettyacademy.com")
+                .addHeader("Authorization", token)
+                .build()
+                ;
+
+        RequestSpecification reqADeleteProduct =
+                given()
+                        .spec(deleteProductBaseRequest)
+                ;
+
+        String productDeletedResponse =
+                reqADeleteProduct.when()
+                        .delete("/api/ecom/product/delete-product/"+ lastProductId)
+                        .then()
+                        .extract().response().asString()
+                ;
+
+        System.out.println(lastProductId + ": " + productDeletedResponse);
     }
 }
