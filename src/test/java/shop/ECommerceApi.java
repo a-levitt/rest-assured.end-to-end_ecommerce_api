@@ -44,6 +44,8 @@ public class ECommerceApi {
         String token = loginResponse.getToken();
         String userId = loginResponse.getUserId();
 
+        System.out.println("User " + userId + " authorized!");
+
         // Add Product
 
         RequestSpecification addProductBaseRequest = new RequestSpecBuilder()
@@ -74,6 +76,8 @@ public class ECommerceApi {
 
         JsonPath jsp = new JsonPath(productCreatedResponse);
         String lastProductId = jsp.get("productId");
+
+        System.out.println(lastProductId + " - product created.");
 
         // Create Order
         RequestSpecification createOrderBaseRequest = new RequestSpecBuilder()
@@ -149,6 +153,9 @@ public class ECommerceApi {
                         .then()
                         .extract().response().asString()
                 ;
+
+        JsonPath jsd = new JsonPath(productDeletedResponse);
+        productDeletedResponse = jsd.get("message");
 
         System.out.println(lastProductId + ": " + productDeletedResponse);
     }
