@@ -16,7 +16,7 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 
 public class ECommerceApi {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         // Login
 
@@ -104,9 +104,30 @@ public class ECommerceApi {
         ;
 
         JsonPath jso = new JsonPath(orderCreatedResponse);
-        String lastOrderId = jso.get("productOrderId[0]");
+        String lastOrderId = jso.get("orders[0]");
+
+        System.out.println("LAST ORDER ID: " + lastOrderId);
 
         // View order details
+        RequestSpecification viewOrderDetailsRequest = new RequestSpecBuilder()
+                .setBaseUri("https://rahulshettyacademy.com")
+                .addHeader("Authorization", token)
+                .build()
+        ;
 
+        RequestSpecification reqOrderDetails =
+        given()
+                .spec(viewOrderDetailsRequest)
+                .queryParam("id", lastOrderId)
+                //.queryParam("id", "66bf490bae2afd4c0b4e099f")
+                .log().all()
+        ;
+
+        reqOrderDetails.when()
+                 .get("/api/ecom/order/get-orders-details")
+        .then()
+                .log().all()
+                .extract().response()
+        ;
     }
 }
