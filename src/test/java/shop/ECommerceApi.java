@@ -4,6 +4,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.specification.RequestSpecification;
+import org.testng.Assert;
 import pojo.OrderSingle;
 import pojo.Orders;
 import secure.SecureUserData;
@@ -143,20 +144,22 @@ public class ECommerceApi {
                 ;
 
         RequestSpecification reqADeleteProduct =
-                given()
-                        .spec(deleteProductBaseRequest)
-                ;
+        given()
+                .spec(deleteProductBaseRequest)
+                .pathParam("productId", lastProductId)
+        ;
 
         String productDeletedResponse =
-                reqADeleteProduct.when()
-                        .delete("/api/ecom/product/delete-product/"+ lastProductId)
-                        .then()
-                        .extract().response().asString()
-                ;
+        reqADeleteProduct.when()
+                .delete("/api/ecom/product/delete-product/{productId}")
+                .then()
+                .extract().response().asString()
+        ;
 
         JsonPath jsd = new JsonPath(productDeletedResponse);
         productDeletedResponse = jsd.get("message");
 
+        Assert.assertEquals("Product Deleted Successfully", jsd.get("message"));
         System.out.println(lastProductId + ": " + productDeletedResponse);
     }
 }
