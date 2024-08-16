@@ -31,6 +31,7 @@ public class ECommerceApi {
 
         RequestSpecification reqLogin =
         given()
+                .relaxedHTTPSValidation()
                 .spec(baseRequest)
                 .body(SecureUserData.loginData())
         ;
@@ -161,5 +162,30 @@ public class ECommerceApi {
 
         Assert.assertEquals("Product Deleted Successfully", jsd.get("message"));
         System.out.println(lastProductId + ": " + productDeletedResponse);
+
+        // Delete order
+        RequestSpecification deleteOrderBaseRequest = new RequestSpecBuilder()
+                .setBaseUri("https://rahulshettyacademy.com")
+                .addHeader("Authorization", token)
+                .build()
+                ;
+
+        RequestSpecification reqADeleteOrder =
+                given()
+                        .spec(deleteOrderBaseRequest)
+                        .pathParam("orderId", lastOrderId)
+                ;
+
+        String orderDeletedResponse =
+                reqADeleteOrder.when()
+                        .delete("/api/ecom/order/delete-order/{orderId}")
+                        .then()
+                        .extract().response().asString()
+                ;
+
+        JsonPath jsod = new JsonPath(orderDeletedResponse);
+        orderDeletedResponse = jsod.get("message");
+
+        System.out.println(lastOrderId + ": " + orderDeletedResponse);
     }
 }
